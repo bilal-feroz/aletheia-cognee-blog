@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Aletheia: The AI Assistant That Can Learn, Unlearn, and Prove It</title>
+  <meta name="description" content="Built with self-hosted open-source Cognee, Aletheia turns memory into something visible, auditable, and correctable. A builder's story about making AI forget on purpose." />
+  <meta name="keywords" content="Cognee, AI memory, knowledge graph, retraction, unlearning, open source" />
+  <meta name="author" content="Aletheia Team" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Aletheia: The AI Assistant That Can Learn, Unlearn, and Prove It" />
+  <meta property="og:description" content="Built with self-hosted Cognee, Aletheia makes AI memory visible, auditable, and correctable." />
+  <meta property="og:type" content="article" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ─── Header ──────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="site-wordmark">✦ <span>ALETHEIA</span></a>
+      <a href="#" class="header-link" id="view-project-link">View Project</a>
+    </div>
+  </header>
+
+  <!-- ─── Hero ────────────────────────────────────────────── -->
+  <article class="article-wrapper">
+    <section class="hero" id="hero">
+      <div class="hero-badge">Built with self-hosted Cognee</div>
+      <h1>Aletheia: The AI Assistant That Can Learn, Unlearn, and Prove It</h1>
+      <p class="subtitle">Built with self-hosted open-source Cognee, Aletheia turns memory into something visible, auditable, and correctable.</p>
+      <p class="hero-meta">Cognee Hackathon · Best Blogs Side Track · July 2026</p>
+    </section>
+
+    <hr />
+
+    <!-- ─── 1. The Problem ──────────────────────────────────── -->
+    <section id="the-problem">
+      <h2><span class="section-number">01</span> The problem nobody talks about</h2>
+
+      <p>Every RAG assistant you have ever used can <em>learn</em>. You give it a document, it chunks it, embeds it, and retrieves it later. That part works. People have been solving retrieval for years.</p>
+
+      <p>The hard part is what happens when the document is wrong.</p>
+
+      <p>A study gets retracted. A policy updates. An internal memo supersedes last month's guidance. In most AI assistants, the outdated information is still in the vector store, still retrievable, still confidently cited in answers. The system learned, but it never <em>unlearned</em>. It does not even know unlearning is something it should do.</p>
+
+      <div class="pullquote">
+        The hard part was not making the AI remember. The hard part was making it change its mind.
+      </div>
+
+      <p>Aletheia is a research assistant built around that specific problem. Not a general-purpose chatbot. Not a document Q&amp;A demo. A system that treats memory as a lifecycle — something that can be created, trusted, questioned, revoked, and audited — and makes every stage of that lifecycle visible to the person relying on it.</p>
+    </section>
+
+    <!-- ─── 2. The Idea ─────────────────────────────────────── -->
+    <section id="the-idea">
+      <h2><span class="section-number">02</span> The idea: memory as a lifecycle</h2>
+
+      <p>Most AI memory is a blob. You put things in. They stay in. If you are lucky, there is a delete button somewhere. But deletion is not unlearning — it is just removing text. The system does not know <em>why</em> it forgot, what changed, or what it should answer differently now.</p>
+
+      <p>Aletheia's design starts from four operations that every piece of knowledge should go through:</p>
+
+      <!-- Timeline -->
+      <div class="timeline" id="lifecycle-timeline">
+        <div class="timeline-step">
+          <div class="timeline-dot">📥</div>
+          <div class="timeline-label"><strong>Remember</strong>Ingest a source</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">🔍</div>
+          <div class="timeline-label"><strong>Recall</strong>Answer from trusted sources</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">⚠️</div>
+          <div class="timeline-label"><strong>Conflict</strong>Detect contradiction</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">🗑</div>
+          <div class="timeline-label"><strong>Forget</strong>Retract discredited data</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">🔄</div>
+          <div class="timeline-label"><strong>Improve</strong>Re-enrich survivors</div>
+        </div>
+        <div class="timeline-step">
+          <div class="timeline-dot">✦</div>
+          <div class="timeline-label"><strong>Answer</strong>Different answer, different citations</div>
+        </div>
+      </div>
+
+      <p>These are not abstract concepts. Each one maps directly to a Cognee operation. That is not an accident — it is the reason I chose Cognee in the first place.</p>
+    </section>
+
+    <!-- ─── 3. How Cognee Became the Product ────────────────── -->
+    <section id="cognee-as-product">
+      <h2><span class="section-number">03</span> How Cognee became the product</h2>
+
+      <p>Cognee is often described as a memory framework. That is technically accurate and completely understates what happened when I started building Aletheia. Cognee is not a backend service that Aletheia wraps with a UI. Cognee's operations <em>are</em> the product's operations. Every feature the user sees maps to a Cognee call.</p>
+
+      <p>The entire system runs on self-hosted, open-source <code>cognee==1.2.2</code>. No Cognee cloud account. No hosted API key. All data — SQLite, LanceDB vectors, the graph store — lives in a local <code>./data/</code> directory.</p>
+
+      <div class="op-grid">
+        <div class="op-card" id="op-remember">
+          <div class="op-name">remember()</div>
+          <p>Every source is ingested into its own Cognee dataset — <code>src_&lt;slug&gt;</code>. This is the foundation: one dataset per source means each source can be trusted or revoked independently.</p>
+        </div>
+        <div class="op-card" id="op-recall">
+          <div class="op-name">recall()</div>
+          <p>When Aletheia answers a question, it passes only trusted dataset names to <code>recall()</code>. Retracted sources are not hidden — they are structurally outside the recall scope.</p>
+        </div>
+        <div class="op-card" id="op-forget">
+          <div class="op-name">forget()</div>
+          <p>The retraction itself. <code>forget(dataset=...)</code> surgically deletes one source's memories from the graph. This is a real deletion, not a soft flag.</p>
+        </div>
+        <div class="op-card" id="op-improve">
+          <div class="op-name">improve()</div>
+          <p>After a retraction, the remaining trusted datasets are re-enriched. The graph re-settles into a corrected worldview instead of just having a hole where the retracted data was.</p>
+        </div>
+        <div class="op-card" id="op-graph">
+          <div class="op-name">get_graph_data()</div>
+          <p>The constellation UI — every node, every link — is pulled directly from Cognee's graph. No mockup layer. The graph <em>is</em> the visualization.</p>
+        </div>
+      </div>
+
+      <div class="pullquote">
+        In Aletheia, forgetting is not a UI trick. It is a Cognee dataset operation.
+      </div>
+    </section>
+
+    <!-- ─── 4. The Un-Forgetting Moment ─────────────────────── -->
+    <section id="un-forgetting">
+      <h2><span class="section-number">04</span> The "un-forgetting" moment</h2>
+
+      <p>Here is the demo narrative. All sources are fictional — no real brands, journals, or people are referenced.</p>
+
+      <p>Three sources are loaded: a fictional supplement-industry trial claiming a 40% memory boost from a compound called "Mnemosyne-7," a news piece amplifying the claim, and a university meta-analysis that is more cautious.</p>
+
+      <p>Ask: <em>"Does Mnemosyne-7 improve memory? What actually works?"</em></p>
+
+      <p>Aletheia answers, and the answer parrots the 40% claim. It cites the trial and the news piece. So far, this looks like every other RAG assistant.</p>
+
+      <p>Then a retraction notice arrives. One click ingests a journal retraction into the system — live, through the same <code>remember()</code> pipeline as every other source.</p>
+
+      <p>Aletheia reads the retraction. It detects — <em>on its own</em> — that this new source disputes a source it currently trusts. An amber conflict card slides in, naming the disputed source and explaining the contradiction. The human confirms the retraction.</p>
+
+      <p>What happens next is the point of the whole project: the retracted source's nodes ignite red in the constellation and die. A live ticker counts: <strong>"10 memories removed · 20 links severed."</strong> Those numbers are measured from the graph — a before/after diff of real nodes, not hardcoded text.</p>
+
+      <p>Ask the same question again. The answer now says the claim is retracted and unsupported, recommends what the surviving meta-analysis actually found (exercise and sleep), and cites different sources. <strong>The AI visibly changed its mind.</strong></p>
+    </section>
+
+    <!-- ─── 5. Why Dataset-Scoped Trust Matters ─────────────── -->
+    <section id="trust-scoping">
+      <h2><span class="section-number">05</span> Why dataset-scoped trust matters</h2>
+
+      <p>You could "retract" a source in a vanilla RAG system by deleting its chunks from the vector store. But that is a blunt operation. You lose the context of why it was removed. You cannot audit it. And if the source's claims were repeated or summarized elsewhere in the embeddings, fragments survive.</p>
+
+      <div class="callout" id="callout-trust">
+        <div class="callout-label">Design principle</div>
+        <p><strong>Trust is a recall filter.</strong> In Aletheia, trust is not a metadata tag — it determines what <code>recall()</code> can even see. Retracted knowledge is not buried lower in the results. It is removed from the space the assistant is allowed to recall from.</p>
+      </div>
+
+      <p>This is possible because of a specific design decision: one Cognee dataset per source. When you call <code>recall(datasets=[...])</code> and only pass trusted dataset names, the retracted source's memories are not just deprioritized — they are unreachable. The recall boundary is structural, not heuristic.</p>
+
+      <div class="callout" id="callout-forgetting">
+        <div class="callout-label">Key distinction</div>
+        <p><strong>Forgetting is not hiding.</strong> A retracted source is not buried lower in the prompt. It is removed from the space the assistant is allowed to recall from. This is a Cognee <code>forget(dataset=...)</code> operation, not a UI filter.</p>
+      </div>
+    </section>
+
+    <!-- ─── 6. Visual Memory ────────────────────────────────── -->
+    <section id="visual-memory">
+      <h2><span class="section-number">06</span> Visual memory: the constellation</h2>
+
+      <p>Aletheia's main interface is a force-directed graph — what we call the constellation. Every star is a real graph node pulled from <code>get_graph_data()</code>. Nodes are colored by source. Links represent relationships Cognee extracted during ingestion. The layout is not decorative. It is the system's actual memory, rendered.</p>
+
+      <div class="pullquote">
+        The graph does not just decorate the product. It is the product's memory made visible.
+      </div>
+
+      <p>When you click a citation chip in an answer, the contributing nodes pulse. You can trace exactly which memories the answer stands on. This attribution is real — the node IDs come from Cognee's relational node ledger, cross-checked by a graph-node diff taken before and after each ingestion.</p>
+
+      <p>During retraction, the constellation is the main event. The retracted nodes ignite, collapse, and disappear over 1.6 seconds while the rest of the graph re-settles under the force simulation. It is not an animation played over the data. It is the data driving the animation.</p>
+    </section>
+
+    <!-- ─── Architecture Diagram ────────────────────────────── -->
+    <div class="diagram-card" id="architecture-diagram">
+      <div class="diagram-title">⚙ Architecture — clearly labelled, not a screenshot</div>
+
+      <div class="diagram-flow">
+        <div class="diagram-row">
+          <div class="diagram-box frontend">🖥 React Frontend<br/><small>Constellation · Sources · Ask panel</small></div>
+        </div>
+        <div class="diagram-arrow">↕ REST /api/*</div>
+        <div class="diagram-row">
+          <div class="diagram-box backend">⚡ FastAPI Backend<br/><small>sources.py · memory.py · changelog.py</small></div>
+        </div>
+        <div class="diagram-arrow">↕ async cognee.*</div>
+        <div class="diagram-row">
+          <div class="diagram-box cognee">✦ Self-hosted Cognee 1.2.2<br/><small>remember · recall · improve · forget</small></div>
+        </div>
+        <div class="diagram-arrow">↕</div>
+        <div class="diagram-row">
+          <div class="diagram-box store">💾 Local Storage<br/><small>SQLite + LanceDB vectors + graph store → ./data/</small></div>
+        </div>
+      </div>
+
+      <p style="text-align:center; margin-top:1rem; font-size:0.78rem; color:var(--text-muted);">
+        External: Groq LLM (API) · fastembed local embeddings (all-MiniLM-L6-v2)
+      </p>
+    </div>
+
+    <!-- ─── 7. Auditability ─────────────────────────────────── -->
+    <section id="auditability">
+      <h2><span class="section-number">07</span> Auditability: the ledger and the diff</h2>
+
+      <p>Every belief change is recorded in the Mind-Change Log — a JSONL ledger that the UI renders as a scrolling timeline. When you retract a source, a new entry appears: what was retracted, why, and the exact node and link counts that changed.</p>
+
+      <div class="callout" id="callout-diff">
+        <div class="callout-label">Implementation detail</div>
+        <p><strong>The graph diff is measured.</strong> Before and after every <code>forget()</code>, Aletheia snapshots the graph via Cognee's node ledger. The "10 memories removed · 20 links severed" numbers in the UI are a subtraction of those two snapshots — not hardcoded, not estimated.</p>
+      </div>
+
+      <p>This matters for trust. If an assistant says "I no longer believe X," you should be able to ask: what exactly changed? How many memories were affected? Which sources remain? The ledger answers all of that.</p>
+    </section>
+
+    <!-- ─── 8. Stateless LLM Comparison ─────────────────────── -->
+    <section id="stateless-comparison">
+      <h2><span class="section-number">08</span> The "Stateless LLM" toggle</h2>
+
+      <p>Aletheia has a built-in comparison mode. Flip the toggle, and the same question is answered by a vanilla LLM call — no memory, no retrieval, no sources. The two answers appear side by side.</p>
+
+      <table class="compare-table" id="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Aletheia (Cognee-backed)</th>
+            <th>Stateless LLM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cites sources</td>
+            <td class="check">✓ Named, traceable</td>
+            <td class="cross">✗ None</td>
+          </tr>
+          <tr>
+            <td>Can retract</td>
+            <td class="check">✓ Surgical per-source</td>
+            <td class="cross">✗ No memory to retract</td>
+          </tr>
+          <tr>
+            <td>Answers change after correction</td>
+            <td class="check">✓ Verified by test</td>
+            <td class="cross">✗ Same answer every time</td>
+          </tr>
+          <tr>
+            <td>Shows what it stands on</td>
+            <td class="check">✓ Node attribution</td>
+            <td class="cross">✗ Opaque</td>
+          </tr>
+          <tr>
+            <td>Accountable</td>
+            <td class="check">✓ Ledger + graph diff</td>
+            <td class="cross">✗ No record</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>The stateless answer feels confident. It often sounds right. But it has no receipts. It cannot tell you <em>why</em> it believes something, and it cannot change its mind when the evidence does. The toggle makes this gap visceral — not by arguing for memory, but by showing the absence of it.</p>
+    </section>
+
+    <!-- ─── 9. Testing the Claim ────────────────────────────── -->
+    <section id="testing">
+      <h2><span class="section-number">09</span> Testing the claim</h2>
+
+      <p>Claims about AI behavior are easy to make and hard to verify. That is why Aletheia includes an automated flip test — a <code>pytest</code> that drives the entire demo narrative programmatically:</p>
+
+      <ol>
+        <li>Seed the three fictional sources via <code>remember()</code></li>
+        <li>Ask the question via <code>recall()</code></li>
+        <li>Ingest the retraction notice</li>
+        <li>Assert the conflict was auto-detected</li>
+        <li>Retract through the same code path as the UI button</li>
+        <li>Ask again and assert the answer changed</li>
+        <li>Assert the discredited claim ("40%") is gone from the new answer</li>
+      </ol>
+
+      <div class="test-card" id="flip-test-results">
+        <div class="test-header">
+          <span class="test-badge">✓ PASSING</span>
+          <span style="font-size:0.82rem; color:var(--text-muted);">pytest tests/test_flip.py — 2 consecutive green runs</span>
+        </div>
+        <table>
+          <tr><td>Conflict auto-detected</td><td>Yes — disputed_source_id == "helios_study"</td></tr>
+          <tr><td>Nodes removed (Helios trial)</td><td>10</td></tr>
+          <tr><td>Links severed (Helios trial)</td><td>20</td></tr>
+          <tr><td>Nodes removed (Meridian Post)</td><td>6</td></tr>
+          <tr><td>Links severed (Meridian Post)</td><td>11</td></tr>
+          <tr><td>Answer changed, "40%" gone</td><td>2/2 consecutive runs</td></tr>
+          <tr><td>Full flip-test runtime</td><td>3:10, then 2:46</td></tr>
+        </table>
+      </div>
+
+      <p>The test is not a unit test of a function. It tests the <em>thesis</em>: that Aletheia can learn, detect a contradiction, forget the discredited knowledge, and answer differently — end to end, reproducibly.</p>
+    </section>
+
+    <!-- ─── 10. What I Learned ──────────────────────────────── -->
+    <section id="what-i-learned">
+      <h2><span class="section-number">10</span> What I learned building it</h2>
+
+      <p>I started Aletheia because I was frustrated. I kept reading about AI memory systems that were really just bigger context windows, and I kept seeing demos where "knowledge management" meant "we embedded your PDFs." That felt like it was missing something fundamental about how knowledge actually works — specifically, that knowledge changes, gets corrected, and sometimes needs to be taken back.</p>
+
+      <p>When I found Cognee, the thing that caught my attention was <code>forget()</code>. Not as a cleanup utility — as a first-class operation with the same standing as <code>remember()</code>. That implied a worldview where memory is not a warehouse you put things into. It is a living system with a lifecycle. And once you have that, you can build things that most RAG systems cannot even express: trust scoping, retraction, auditable belief changes.</p>
+
+      <p>The hardest part was not the code. The hardest part was resisting the temptation to hide complexity. It would have been easy to make retraction a background process — silently update the data and show a cleaner answer next time. But the whole point is that the user should <em>see</em> the forgetting happen. They should see the nodes die, count the severed links, read the ledger entry. If AI memory is going to be trustworthy, it has to be inspectable.</p>
+
+      <p>I also learned that dataset-scoped operations are more powerful than they sound. "One dataset per source" is a simple design rule, but it cascades into everything: trust becomes a recall filter, retraction becomes surgical, attribution becomes traceable, and the graph becomes a genuine map of what the system believes and why.</p>
+
+      <p>Building with self-hosted Cognee meant I could inspect everything. When something went wrong — a node survived retraction when it should not have, or a shared entity was incorrectly killed — I could look at the actual SQLite database, the actual graph store, and understand what happened. That is the value of open source for a project like this: not just "free," but <em>legible</em>.</p>
+    </section>
+
+    <!-- ─── 11. Closing ─────────────────────────────────────── -->
+    <section id="closing">
+      <h2><span class="section-number">11</span> Closing</h2>
+
+      <p>Aletheia is a hackathon project. It is not deployed in production. It does not handle real medical, legal, or scientific data. The demo sources are fictional.</p>
+
+      <p>But the mechanism is real. Every <code>remember()</code>, every <code>recall()</code>, every <code>forget()</code> runs against live Cognee. The graph nodes are real. The before/after diffs are measured. The flip test passes green.</p>
+
+      <p>The question I keep coming back to is: if an AI assistant learns something wrong, what happens next? In most systems, nothing. The wrong information sits there, confidently retrievable. In Aletheia, the contradiction is detected, the retraction is proposed, the human confirms, the graph changes, the ledger records it, and the next answer is different.</p>
+
+      <div class="pullquote">
+        AI memory should not only be powerful. It should be correctable.
+      </div>
+
+      <p style="text-align: center; margin-top: 2rem;">
+        <a href="#" class="header-link" style="font-size: 0.9rem; padding: 0.5rem 1.2rem;">View the Project on GitHub →</a>
+      </p>
+    </section>
+
+    <hr />
+
+    <!-- ─── Honesty note ────────────────────────────────────── -->
+    <section id="honesty" style="font-size: 0.88rem; color: var(--text-muted);">
+      <p><strong>Honesty notes:</strong> All demo sources are fictional — no real brands, journals, or people are referenced. Built with AI assistance; all architecture and code reviewed by the team. Nothing is mocked: every answer is a live <code>cognee.recall()</code>, every node comes from <code>get_graph_data()</code>, every "N memories removed" is a real graph diff. Aletheia is a hackathon project and has not been deployed to production.</p>
+    </section>
+
+  </article>
+
+  <!-- ─── Footer ──────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p>Aletheia was built for the <a href="https://github.com/topoteretes/cognee" target="_blank" rel="noopener">Cognee</a> hackathon using self-hosted open-source Cognee.</p>
+    <p style="margin-top: 0.5rem;">MIT License · Made with care and <code>forget()</code></p>
+  </footer>
+
+</body>
+</html>
